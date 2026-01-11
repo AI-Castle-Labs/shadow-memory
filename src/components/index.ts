@@ -1,0 +1,23 @@
+// Component implementations for the Shadow Memory System
+export { ContextProcessor } from './context-processor';
+export { AISummaryGenerator } from './ai-summary-generator';
+export { EmbeddingGenerator } from './embedding-generator';
+export { MemoryRepresentationGenerator } from './memory-representation-generator';
+export { ActivationScorer } from './activation-scorer';
+export { SimilarityEngine } from './similarity-engine';
+export { MemoryStore } from './memory-store';
+export { ThresholdManager } from './threshold-manager';
+export { MemoryAwarenessInterface } from './memory-awareness-interface';
+export { TemporalDecay } from './temporal-decay';
+export { MemoryArchival } from './memory-archival';
+export { CleanupRecommendationSystem } from './cleanup-recommendation';
+export { MemoryLifecycleManager } from './memory-lifecycle-manager';
+export { BenchmarkManager } from './benchmark-manager';
+export { ShadowMemorySystem } from './shadow-memory-system';
+export { ConversationSimulator } from './conversation-simulator';
+export { ConversationScenarioGenerator } from './conversation-scenario-generator';
+export { MemoryAwarenessEvaluator } from './memory-awareness-evaluator';
+export { ResponseQualityAssessor } from './response-quality-assessor';
+export { PerformanceDashboard } from './performance-dashboard';
+export { PerformanceMonitor } from './performance-monitor';
+export { ReportGenerator } from './report-generator';

@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #0d0d12;
+  color: #e4e4e7;
+  font-family: 'Sora', sans-serif;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #16161d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2a2a35;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a45;
+}
+
+.neural-card {
+  background-color: #16161d;
+  border: 1px solid #2a2a35;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
+.neural-input {
+  background-color: #0d0d12;
+  border: 1px solid #2a2a35;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  color: #e4e4e7;
+  transition: border-color 0.2s;
+}
+
+.neural-input::placeholder {
+  color: #71717a;
+}
+
+.neural-input:focus {
+  outline: none;
+  border-color: #00f0ff;
+}
+
+.neural-button {
+  background-color: #00f0ff;
+  color: #0d0d12;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.neural-button:hover {
+  opacity: 0.9;
+}
+
+.neural-button:active {
+  transform: scale(0.95);
+}
+
+.neural-button-secondary {
+  background-color: #16161d;
+  border: 1px solid #2a2a35;
+  color: #e4e4e7;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.neural-button-secondary:hover {
+  border-color: #00f0ff;
+}
+
+.glow-cyan {
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.glow-violet {
+  box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+}
+
+.glow-amber {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
+.font-display {
+  font-family: 'Sora', sans-serif;
+}
+
+.font-mono {
+  font-family: 'JetBrains Mono', monospace;
+}

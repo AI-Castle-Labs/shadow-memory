@@ -1,0 +1,262 @@
+{
+  "generatedAt": "2026-01-10T22:13:51.560Z",
+  "supermemoryProject": "default",
+  "supermemoryAuth": "header-only",
+  "scenarios": [
+    {
+      "scenarioId": "scenario_1768083224012_t9uts9v5k",
+      "title": "software development conversation - easy difficulty",
+      "summary": "A 6-turn conversation about software development with medium memory dependency",
+      "turns": [
+        {
+          "turnId": "turn_1",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 3
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 89,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_2",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 440,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_3",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 35,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_4",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 182,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_5",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 178,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_6",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 184,
+            "status": 401
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "scenario_1768083224012_b1adgiifs",
+      "title": "project management conversation - medium difficulty",
+      "summary": "A 6-turn conversation about project management with high memory dependency",
+      "turns": [
+        {
+          "turnId": "turn_1",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 452,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_2",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 179,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_3",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 210,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_4",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 125,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_5",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 91,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_6",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 50,
+            "status": 401
+          }
+        }
+      ]
+    },
+    {
+      "scenarioId": "scenario_1768083224012_kln3os19s",
+      "title": "data analysis conversation - hard difficulty",
+      "summary": "A 6-turn conversation about data analysis with low memory dependency",
+      "turns": [
+        {
+          "turnId": "turn_1",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 64,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_2",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 222,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_3",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 54,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_4",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 0
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 60,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_5",
+          "speaker": "user",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 56,
+            "status": 401
+          }
+        },
+        {
+          "turnId": "turn_6",
+          "speaker": "assistant",
+          "shadow": {
+            "activationSummaries": [],
+            "latencyMs": 1
+          },
+          "supermemory": {
+            "text": "Unauthorized",
+            "latencyMs": 215,
+            "status": 401
+          }
+        }
+      ]
+    }
+  ]
+}
