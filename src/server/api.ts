@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-const shadowMemory = new ShadowMemorySystem();
+const shadowMemory = new ShadowMemorySystem({
+  thresholds: { conversation: 0.25, document: 0.25, task: 0.25, query: 0.25, mixed: 0.25 },
+  weights: { embedding: 0.7, metadata: 0.15, summary: 0.1, temporal: 0.05 },
+});
 const agent = new MemoryAugmentedAgent(shadowMemory);
 
 interface ChatRequest {
