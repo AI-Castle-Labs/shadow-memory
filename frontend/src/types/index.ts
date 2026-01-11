@@ -21,3 +21,23 @@ export interface ConversationStats {
   memoriesRetrieved: number;
   conversationTurns: number;
 }
+
+export type AgentPersonaId = 'general' | 'travel' | 'finance' | 'tech' | 'coach';
+
+export interface AgentPersona {
+  id: AgentPersonaId;
+  name: string;
+  description: string;
+  systemPrompt: string;
+  icon: 'sparkles' | 'plane' | 'chart' | 'terminal' | 'target';
+  accentColor: 'cyan' | 'violet' | 'amber' | 'emerald' | 'rose';
+}
+
+export type SampleConversationId = 'travel' | 'finance' | 'tech';
+
+export interface SampleConversation {
+  id: SampleConversationId;
+  name: string;
+  description: string;
+  messages: Omit<Message, 'id' | 'timestamp'>[];
+}

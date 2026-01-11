@@ -2,8 +2,12 @@ import { useState, useCallback, useEffect } from 'react';
 import { ChatPanel } from './components/ChatPanel';
 import { DashboardPanel } from './components/DashboardPanel';
 import { SettingsModal } from './components/SettingsModal';
-import { sendChatMessage, getSystemStats, checkHealth, setApiKey } from './services/api';
-import type { Message, MemoryActivation, ConversationStats } from './types';
+import { ApiKeyModal } from './components/ApiKeyModal';
+import { AgentPersonaSelector } from './components/AgentPersonaSelector';
+import { SampleConversationDropdown } from './components/SampleConversationDropdown';
+import { sendChatMessage, getSystemStats, checkHealth, setApiKey as setServerApiKey } from './services/api';
+import { agentPersonas, getPersonaById } from './data/personas';
+import type { Message, MemoryActivation, ConversationStats, AgentPersona, AgentPersonaId } from './types';
 
 const fallbackActivations: MemoryActivation[] = [
   {
@@ -33,6 +37,17 @@ function App() {
   const [storedApiKey, setStoredApiKey] = useState<string>(() => {
     return localStorage.getItem('openai_api_key') || '';
   });
+  const [showApiKeyModal, setShowApiKeyModal] = useState(false);
+  const [selectedPersonaId, setSelectedPersonaId] = useState<AgentPersonaId>(() => {
+    return (localStorage.getItem('selected_persona') as AgentPersonaId) || 'general';
+  });
+
+  useEffect(() => {
+    const hasKey = localStorage.getItem('openai_api_key');
+    if (!hasKey) {
+      setShowApiKeyModal(true);
+    }
+  }, []);
 
   useEffect(() => {
     const initConnection = async () => {
@@ -62,7 +77,7 @@ function App() {
 
   useEffect(() => {
     if (storedApiKey && isConnected) {
-      setApiKey(storedApiKey).then(success => {
+      setServerApiKey(storedApiKey).then(success => {
         if (success) setHasApiKey(true);
       });
     }
@@ -71,11 +86,29 @@ function App() {
   const handleSaveApiKey = async (apiKey: string) => {
     setStoredApiKey(apiKey);
     localStorage.setItem('openai_api_key', apiKey);
+    setShowApiKeyModal(false);
     
     if (isConnected && apiKey) {
-      const success = await setApiKey(apiKey);
+      const success = await setServerApiKey(apiKey);
       setHasApiKey(success);
     }
+  };
+
+  const handleApiKeyModalSubmit = (apiKey: string) => {
+    handleSaveApiKey(apiKey);
+  };
+
+  const handlePersonaSelect = (persona: AgentPersona) => {
+    setSelectedPersonaId(persona.id);
+    localStorage.setItem('selected_persona', persona.id);
+  };
+
+  const handleLoadSampleConversation = (sampleMessages: Message[]) => {
+    setMessages(sampleMessages);
+    setStats(prev => ({
+      ...prev,
+      conversationTurns: sampleMessages.length,
+    }));
   };
 
   const handleSendMessage = useCallback(async (content: string) => {
@@ -91,7 +124,8 @@ function App() {
 
     try {
       if (isConnected) {
-        const response = await sendChatMessage(content, storedApiKey || undefined);
+        const persona = getPersonaById(selectedPersonaId);
+        const response = await sendChatMessage(content, storedApiKey || undefined, persona.systemPrompt);
         
         const newActivations: MemoryActivation[] = response.candidateMemories.map((m, idx) => ({
           id: m.id,
@@ -144,7 +178,10 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [isConnected, storedApiKey]);
+  }, [isConnected, storedApiKey, selectedPersonaId]);
+
+  const selectedPersona = agentPersonas.find(p => p.id === selectedPersonaId) || agentPersonas[0];
+  const chatDisabled = !storedApiKey;
 
   return (
     <div className="h-screen flex flex-col bg-neural-dark">
@@ -166,6 +203,10 @@ function App() {
         </div>
         
         <div className="flex items-center gap-3">
+          <SampleConversationDropdown 
+            onLoadConversation={handleLoadSampleConversation}
+            disabled={chatDisabled}
+          />
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neural-dark border border-neural-border">
             <span className={`w-2 h-2 rounded-full ${isConnected ? (hasApiKey ? 'bg-neural-cyan' : 'bg-neural-amber') : 'bg-red-500'} ${isConnected ? 'animate-pulse' : ''}`}></span>
             <span className="text-xs font-mono text-neural-muted">
@@ -173,9 +214,12 @@ function App() {
             </span>
           </div>
           {!hasApiKey && isConnected && (
-            <div className="px-2 py-1 rounded bg-neural-amber/20 border border-neural-amber/30">
+            <button
+              onClick={() => setShowApiKeyModal(true)}
+              className="px-2 py-1 rounded bg-neural-amber/20 border border-neural-amber/30 hover:bg-neural-amber/30 transition-colors"
+            >
               <span className="text-xs font-mono text-neural-amber">Add API Key</span>
-            </div>
+            </button>
           )}
           <button
             onClick={() => setSettingsOpen(true)}
@@ -189,13 +233,25 @@ function App() {
         </div>
       </header>
 
+      <div className="px-6 py-3 border-b border-neural-border bg-neural-dark/50">
+        <AgentPersonaSelector 
+          selectedId={selectedPersonaId} 
+          onSelect={handlePersonaSelect}
+        />
+      </div>
+
       <div className="flex-1 flex overflow-hidden">
         <aside className="w-80 border-r border-neural-border bg-neural-surface/30 flex-shrink-0 overflow-hidden">
           <DashboardPanel stats={stats} activations={activations} />
         </aside>
 
         <main className="flex-1 bg-neural-dark overflow-hidden relative">
-          <ChatPanel messages={messages} onSendMessage={handleSendMessage} />
+          <ChatPanel 
+            messages={messages} 
+            onSendMessage={handleSendMessage}
+            disabled={chatDisabled}
+            selectedPersona={selectedPersona}
+          />
           {isLoading && (
             <div className="absolute bottom-24 left-1/2 -translate-x-1/2">
               <div className="px-4 py-2 rounded-full bg-neural-surface border border-neural-border flex items-center gap-2">
@@ -215,6 +271,13 @@ function App() {
         onSaveApiKey={handleSaveApiKey}
         currentApiKey={storedApiKey}
         hasApiKey={hasApiKey}
+      />
+
+      <ApiKeyModal
+        isOpen={showApiKeyModal}
+        onSubmit={handleApiKeyModalSubmit}
+        onSkip={() => {}}
+        allowSkip={false}
       />
     </div>
   );

@@ -35,12 +35,13 @@ export interface HealthResponse {
 
 export async function sendChatMessage(
   message: string,
-  apiKey?: string
+  apiKey?: string,
+  systemPrompt?: string
 ): Promise<ChatResponse> {
   const response = await fetch(`${API_BASE}/api/chat`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message, apiKey }),
+    body: JSON.stringify({ message, apiKey, systemPrompt }),
   });
 
   if (!response.ok) {
@@ -86,4 +87,31 @@ export async function checkHealth(): Promise<HealthResponse | null> {
   } catch {
     return null;
   }
+}
+
+export interface ApiKeyValidationResult {
+  valid: boolean;
+  error?: string;
+}
+
+export function validateApiKeyFormat(apiKey: string): ApiKeyValidationResult {
+  if (!apiKey || apiKey.trim().length === 0) {
+    return { valid: false, error: 'API key cannot be empty' };
+  }
+
+  const trimmed = apiKey.trim();
+
+  if (!trimmed.startsWith('sk-')) {
+    return { valid: false, error: 'API key must start with "sk-"' };
+  }
+
+  if (trimmed.length < 20) {
+    return { valid: false, error: 'API key appears to be too short' };
+  }
+
+  if (!/^sk-[a-zA-Z0-9_-]+$/.test(trimmed)) {
+    return { valid: false, error: 'API key contains invalid characters' };
+  }
+
+  return { valid: true };
 }

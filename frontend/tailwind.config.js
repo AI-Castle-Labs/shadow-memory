@@ -15,6 +15,14 @@ export default {
         'neural-amber': '#f59e0b',
         'neural-text': '#e4e4e7',
         'neural-muted': '#71717a',
+        'emerald': {
+          400: '#34d399',
+          500: '#10b981',
+        },
+        'rose': {
+          400: '#fb7185',
+          500: '#f43f5e',
+        },
       },
       fontFamily: {
         'mono': ['JetBrains Mono', 'monospace'],

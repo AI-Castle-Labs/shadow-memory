@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import type { Message } from '../types';
+import type { Message, AgentPersona } from '../types';
 
 interface ChatPanelProps {
   messages: Message[];
   onSendMessage: (content: string) => void;
+  disabled?: boolean;
+  selectedPersona?: AgentPersona;
 }
 
 function MessageBubble({ message }: { message: Message }) {
@@ -52,7 +54,7 @@ function MessageBubble({ message }: { message: Message }) {
   );
 }
 
-export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
+export function ChatPanel({ messages, onSendMessage, disabled, selectedPersona }: ChatPanelProps) {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -63,7 +65,7 @@ export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || disabled) return;
     onSendMessage(input.trim());
     setInput('');
   };
@@ -86,11 +88,10 @@ export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
               </svg>
             </div>
             <h3 className="font-display text-xl font-semibold text-neural-text mb-2">
-              Shadow Memory Active
+              {selectedPersona ? `${selectedPersona.name} Ready` : 'Shadow Memory Active'}
             </h3>
             <p className="text-neural-muted text-sm max-w-md leading-relaxed">
-              Your conversation history persists in the neural substrate. 
-              Ask anything and watch relevant memories surface in real-time.
+              {selectedPersona?.description || 'Your conversation history persists in the neural substrate. Ask anything and watch relevant memories surface in real-time.'}
             </p>
             <div className="flex gap-2 mt-6">
               <span className="px-3 py-1.5 rounded-full bg-neural-surface border border-neural-border text-xs text-neural-muted">
@@ -103,6 +104,16 @@ export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
                 Semantic search
               </span>
             </div>
+            {disabled && (
+              <div className="mt-6 px-4 py-3 rounded-lg bg-neural-amber/10 border border-neural-amber/30">
+                <div className="flex items-center gap-2 text-neural-amber text-sm">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <span>Add an API key to start chatting</span>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <>
@@ -122,9 +133,10 @@ export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Enter your message..."
+              placeholder={disabled ? "Add an API key to start chatting..." : "Enter your message..."}
+              disabled={disabled}
               rows={1}
-              className="neural-input w-full resize-none pr-12 min-h-[44px] max-h-[120px]"
+              className={`neural-input w-full resize-none pr-12 min-h-[44px] max-h-[120px] ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
               style={{
                 height: 'auto',
                 minHeight: '44px',
@@ -136,7 +148,7 @@ export function ChatPanel({ messages, onSendMessage }: ChatPanelProps) {
           </div>
           <button
             type="submit"
-            disabled={!input.trim()}
+            disabled={!input.trim() || disabled}
             className="neural-button px-4 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 self-end h-[44px]"
           >
             <span>Send</span>

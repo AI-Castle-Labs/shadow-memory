@@ -17,6 +17,7 @@ const agent = new MemoryAugmentedAgent(shadowMemory);
 interface ChatRequest {
   message: string;
   apiKey?: string;
+  systemPrompt?: string;
 }
 
 interface StoreMemoryRequest {
@@ -32,7 +33,7 @@ let runtimeApiKey: string | undefined;
 
 app.post('/api/chat', async (req: Request<object, object, ChatRequest>, res: Response) => {
   try {
-    const { message, apiKey } = req.body;
+    const { message, apiKey, systemPrompt } = req.body;
 
     if (!message) {
       res.status(400).json({ error: 'Message is required' });
