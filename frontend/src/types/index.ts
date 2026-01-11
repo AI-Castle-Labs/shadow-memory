@@ -31,6 +31,11 @@ export interface AgentPersona {
   systemPrompt: string;
   icon: 'sparkles' | 'plane' | 'chart' | 'terminal' | 'target';
   accentColor: 'cyan' | 'violet' | 'amber' | 'emerald' | 'rose';
+  background?: string;
+  expertise?: string[];
+  communicationStyle?: string;
+  traits?: string[];
+  samplePhrases?: string[];
 }
 
 export type SampleConversationId = 'travel' | 'finance' | 'tech';
