@@ -5,7 +5,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { ApiKeyModal } from './components/ApiKeyModal';
 import { AgentPersonaSelector } from './components/AgentPersonaSelector';
 import { SampleConversationDropdown } from './components/SampleConversationDropdown';
-import { sendChatMessage, getSystemStats, checkHealth, setApiKey as setServerApiKey } from './services/api';
+import { sendChatMessage, getSystemStats, checkHealth, setApiKey as setServerApiKey, storeMemoriesBatch } from './services/api';
 import { agentPersonas, getPersonaById } from './data/personas';
 import type { Message, MemoryActivation, ConversationStats, AgentPersona, AgentPersonaId } from './types';
 
@@ -103,12 +103,39 @@ function App() {
     localStorage.setItem('selected_persona', persona.id);
   };
 
-  const handleLoadSampleConversation = (sampleMessages: Message[]) => {
+  const handleLoadSampleConversation = async (sampleMessages: Message[], sampleMemories?: { content: string; topics?: string[] }[]) => {
     setMessages(sampleMessages);
+    setActivations([]);
     setStats(prev => ({
       ...prev,
       conversationTurns: sampleMessages.length,
     }));
+
+    if (sampleMemories && sampleMemories.length > 0) {
+      try {
+        await storeMemoriesBatch(sampleMemories);
+        const newStats = await getSystemStats();
+        setStats(prev => ({
+          ...prev,
+          totalMemories: newStats.totalMemories,
+        }));
+      } catch (error) {
+        console.error('Failed to load sample memories:', error);
+      }
+    }
+  };
+
+  const handleLoadSampleMemories = async (sampleMemories: { content: string; topics?: string[] }[]) => {
+    try {
+      await storeMemoriesBatch(sampleMemories);
+      const newStats = await getSystemStats();
+      setStats(prev => ({
+        ...prev,
+        totalMemories: newStats.totalMemories,
+      }));
+    } catch (error) {
+      console.error('Failed to load sample memories:', error);
+    }
   };
 
   const handleSendMessage = useCallback(async (content: string) => {
@@ -202,11 +229,12 @@ function App() {
           </div>
         </div>
         
-        <div className="flex items-center gap-3">
-          <SampleConversationDropdown 
-            onLoadConversation={handleLoadSampleConversation}
-            disabled={chatDisabled}
-          />
+          <div className="flex items-center gap-3">
+            <SampleConversationDropdown 
+              onLoadConversation={handleLoadSampleConversation}
+              onLoadMemories={handleLoadSampleMemories}
+              disabled={chatDisabled}
+            />
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-neural-dark border border-neural-border">
             <span className={`w-2 h-2 rounded-full ${isConnected ? (hasApiKey ? 'bg-neural-cyan' : 'bg-neural-amber') : 'bg-red-500'} ${isConnected ? 'animate-pulse' : ''}`}></span>
             <span className="text-xs font-mono text-neural-muted">

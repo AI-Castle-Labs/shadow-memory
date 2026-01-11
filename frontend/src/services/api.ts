@@ -115,3 +115,24 @@ export function validateApiKeyFormat(apiKey: string): ApiKeyValidationResult {
 
   return { valid: true };
 }
+
+export async function storeMemory(content: string, topics?: string[]): Promise<string> {
+  const response = await fetch(`${API_BASE}/api/memory`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content, topics }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to store memory');
+  }
+
+  const data = await response.json();
+  return data.memoryId;
+}
+
+export async function storeMemoriesBatch(memories: { content: string; topics?: string[] }[]): Promise<void> {
+  for (const memory of memories) {
+    await storeMemory(memory.content, memory.topics);
+  }
+}

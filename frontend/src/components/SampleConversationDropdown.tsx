@@ -4,10 +4,11 @@ import { sampleConversations } from '../data/sampleConversations';
 
 interface SampleConversationDropdownProps {
   onLoadConversation: (messages: Message[]) => void;
+  onLoadMemories?: (memories: { content: string; topics?: string[] }[]) => Promise<void>;
   disabled?: boolean;
 }
 
-export function SampleConversationDropdown({ onLoadConversation, disabled }: SampleConversationDropdownProps) {
+export function SampleConversationDropdown({ onLoadConversation, onLoadMemories, disabled }: SampleConversationDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedConversation, setSelectedConversation] = useState<SampleConversation | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,7 +28,7 @@ export function SampleConversationDropdown({ onLoadConversation, disabled }: Sam
     setSelectedConversation(conversation);
   };
 
-  const handleLoad = () => {
+  const handleLoad = async () => {
     if (!selectedConversation) return;
     
     const messages: Message[] = selectedConversation.messages.map((msg, idx) => ({
@@ -37,6 +38,11 @@ export function SampleConversationDropdown({ onLoadConversation, disabled }: Sam
     }));
     
     onLoadConversation(messages);
+
+    if (selectedConversation.memories && selectedConversation.memories.length > 0 && onLoadMemories) {
+      await onLoadMemories(selectedConversation.memories);
+    }
+    
     setIsOpen(false);
     setSelectedConversation(null);
   };

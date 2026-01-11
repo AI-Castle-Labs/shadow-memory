@@ -35,9 +35,15 @@ export interface AgentPersona {
 
 export type SampleConversationId = 'travel' | 'finance' | 'tech';
 
+export interface SampleMemory {
+  content: string;
+  topics?: string[];
+}
+
 export interface SampleConversation {
   id: SampleConversationId;
   name: string;
   description: string;
   messages: Omit<Message, 'id' | 'timestamp'>[];
+  memories?: SampleMemory[];
 }

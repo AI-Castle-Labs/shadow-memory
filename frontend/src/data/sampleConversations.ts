@@ -100,6 +100,28 @@ Would you like ryokan (traditional inn) recommendations in Kyoto? A night in a r
 Shall I help draft a complete day-by-day itinerary for your Kyoto portion?`,
       },
     ],
+    memories: [
+      {
+        content: "User is planning a 2-week trip to Japan in April specifically to see cherry blossoms",
+        topics: ['japan', 'travel', 'cherry-blossoms', 'trip-planning'],
+      },
+      {
+        content: "User wants to experience both traditional and modern Japan - balance of old and new culture",
+        topics: ['japan', 'culture', 'traditional', 'modern'],
+      },
+      {
+        content: "User's budget for ryokan accommodation is $300-400 per night for one special night",
+        topics: ['japan', 'accommodation', 'budget', 'ryokan'],
+      },
+      {
+        content: "User is particularly interested in Kyoto portion of the Japan trip",
+        topics: ['japan', 'kyoto', 'travel', 'itinerary'],
+      },
+      {
+        content: "User is considering whether to get a JR Pass for Japan travel",
+        topics: ['japan', 'transportation', 'jr-pass', 'travel-tips'],
+      },
+    ],
   },
   {
     id: 'finance',
@@ -235,6 +257,28 @@ Build it yourself with:
 Start with **Option 1 (Target Date Fund)** to get invested immediately. You can always switch later as you learn more. The most important thing is getting your money working NOW - time in market beats timing the market.
 
 Want me to walk through the actual steps to buy your first fund?`,
+      },
+    ],
+    memories: [
+      {
+        content: "User is 28 years old with their first good job and $10,000 saved wanting to start investing",
+        topics: ['finance', 'investing', 'age-28', 'savings'],
+      },
+      {
+        content: "User already has a 6-month emergency fund and no debt",
+        topics: ['finance', 'emergency-fund', 'debt-free'],
+      },
+      {
+        content: "User's employer offers 401k match up to 4% which they are already using",
+        topics: ['finance', '401k', 'employer-match'],
+      },
+      {
+        content: "User is interested in Roth IRA and wants to understand the tax benefits",
+        topics: ['finance', 'roth-ira', 'taxes', 'retirement'],
+      },
+      {
+        content: "User has $10,000 to invest and wants guidance on allocation strategy",
+        topics: ['finance', 'investment-strategy', 'portfolio', 'allocation'],
       },
     ],
   },
@@ -453,6 +497,268 @@ useEffect(() => {
 \`\`\`
 
 Your intuition is now calibrated - trust it! When something feels "tangled," it probably is.`,
+      },
+    ],
+    memories: [
+      {
+        content: "User is 28 years old with their first good job and $10,000 saved wanting to start investing",
+        topics: ['finance', 'investing', 'age-28', 'savings'],
+      },
+      {
+        content: "User already has a 6-month emergency fund and no debt",
+        topics: ['finance', 'emergency-fund', 'debt-free'],
+      },
+      {
+        content: "User's employer offers 401k match up to 4% which they are already using",
+        topics: ['finance', '401k', 'employer-match'],
+      },
+      {
+        content: "User is interested in Roth IRA and wants to understand the tax benefits",
+        topics: ['finance', 'roth-ira', 'taxes', 'retirement'],
+      },
+      {
+        content: "User has $10,000 to invest and wants guidance on allocation strategy",
+        topics: ['finance', 'investment-strategy', 'portfolio', 'allocation'],
+      },
+    ],
+  },
+  {
+    id: 'tech',
+    name: 'Debugging Crashes',
+    description: 'Solving a mysterious app crash issue',
+    messages: [
+      {
+        role: 'user',
+        content: "My React app keeps crashing randomly with 'Maximum update depth exceeded'. It happens somewhere in my dashboard but I can't figure out where. How do I debug this?",
+      },
+      {
+        role: 'assistant',
+        content: `The "Maximum update depth exceeded" error is a classic React infinite loop! It happens when a component keeps triggering re-renders endlessly. Let me help you track this down.
+
+**Most Common Causes:**
+
+1. **useEffect without proper dependencies**
+\`\`\`jsx
+// BAD - runs forever
+useEffect(() => {
+  setData(processData(data));
+}); // missing dependency array!
+
+// GOOD
+useEffect(() => {
+  setData(processData(data));
+}, []); // runs once
+\`\`\`
+
+2. **Calling setState directly in render**
+\`\`\`jsx
+// BAD
+function Dashboard() {
+  const [count, setCount] = useState(0);
+  setCount(count + 1); // infinite loop!
+  return <div>{count}</div>;
+}
+\`\`\`
+
+3. **Object/array in useEffect deps**
+\`\`\`jsx
+// BAD - new object every render
+useEffect(() => {
+  fetchData(options);
+}, [{ page: 1 }]); // always "new" object!
+\`\`\`
+
+**Debugging Steps:**
+
+1. **Add console.logs to your useEffects:**
+\`\`\`jsx
+useEffect(() => {
+  console.log('Effect running in Dashboard');
+  // your code
+}, [deps]);
+\`\`\`
+
+2. **Check React DevTools** - Look for components that keep flashing (re-rendering)
+
+3. **Binary search** - Comment out half your dashboard code, see if crash stops. Narrow down.
+
+Can you share the code from your Dashboard component? Or tell me what state/effects it has?`,
+      },
+      {
+        role: 'user',
+        content: "Here's my Dashboard component:\n\n```jsx\nfunction Dashboard({ userId }) {\n  const [data, setData] = useState(null);\n  const [filters, setFilters] = useState({ status: 'all', date: new Date() });\n  \n  useEffect(() => {\n    fetchUserData(userId, filters).then(setData);\n  }, [userId, filters]);\n  \n  useEffect(() => {\n    setFilters(prev => ({ ...prev, date: new Date() }));\n  }, [data]);\n  \n  return <div>...</div>;\n}\n```",
+      },
+      {
+        role: 'assistant',
+        content: `Found it! You have a **circular dependency loop** between your two useEffects. Here's what's happening:
+
+**The Infinite Loop:**
+
+\`\`\`
+1. Component mounts
+2. First useEffect: fetches data → setData()
+3. data changes → triggers second useEffect
+4. Second useEffect: setFilters() with new date
+5. filters changes → triggers first useEffect
+6. First useEffect: fetches data → setData()
+7. GOTO step 3 ♾️
+\`\`\`
+
+**The Problem:**
+
+\`\`\`jsx
+// This creates a NEW Date object every time data changes
+useEffect(() => {
+  setFilters(prev => ({ ...prev, date: new Date() }));
+}, [data]); // Why update filters when data changes?
+\`\`\`
+
+**The Fix:**
+
+Remove the second useEffect entirely, or restructure your logic:
+
+\`\`\`jsx
+function Dashboard({ userId }) {
+  const [data, setData] = useState(null);
+  const [filters, setFilters] = useState({ 
+    status: 'all', 
+    date: new Date() 
+  });
+  
+  // Only fetch when userId or filters change intentionally
+  useEffect(() => {
+    fetchUserData(userId, filters).then(setData);
+  }, [userId, filters]);
+  
+  // If you need to track "last fetched" time, use a separate ref:
+  const lastFetched = useRef(null);
+  
+  useEffect(() => {
+    fetchUserData(userId, filters).then(result => {
+      setData(result);
+      lastFetched.current = new Date(); // doesn't cause re-render
+    });
+  }, [userId, filters]);
+  
+  return <div>...</div>;
+}
+\`\`\`
+
+**Questions to clarify the fix:**
+
+1. What was the second useEffect supposed to do?
+2. Do you need to show "last updated" time to users?
+3. Should filters reset when data changes, or vice versa?
+
+Let me know and I'll give you the exact code you need!`,
+      },
+      {
+        role: 'user',
+        content: 'The second useEffect was supposed to refresh the date filter when new data comes in. But now I realize that makes no sense - it should only update when the user clicks a refresh button. Thanks! How do I prevent similar issues in the future?',
+      },
+      {
+        role: 'assistant',
+        content: `Exactly! That "aha" moment is the key insight. Here are patterns to prevent these issues:
+
+**1. The Dependency Audit Rule**
+
+Before writing any useEffect, ask:
+- "What EXTERNAL events should trigger this?"
+- If the answer involves state you're setting IN the effect → 🚩 red flag
+
+\`\`\`jsx
+// 🚩 Setting state that's also a dependency = danger
+useEffect(() => {
+  setThing(computeFromThing(thing)); // CAREFUL!
+}, [thing]);
+
+// ✅ Use functional updates or useMemo instead
+const computedThing = useMemo(() => compute(thing), [thing]);
+\`\`\`
+
+**2. The "One-Way Data Flow" Principle**
+
+Draw your data flow:
+\`\`\`
+User Action → State Change → Effect → API → State Change
+     ↑                                           |
+     └───────────────────────────────────────────┘
+                    (only via user action!)
+\`\`\`
+
+**3. ESLint Rules (Must Have!)**
+
+\`\`\`bash
+npm install eslint-plugin-react-hooks
+\`\`\`
+
+\`\`\`json
+{
+  "rules": {
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
+\`\`\`
+
+**4. Common Safe Patterns:**
+
+\`\`\`jsx
+// ✅ Event-driven updates
+const handleRefresh = () => {
+  setFilters(prev => ({ ...prev, date: new Date() }));
+};
+
+// ✅ Initial fetch only
+useEffect(() => {
+  fetchData();
+}, []); // empty = mount only
+
+// ✅ Derived state with useMemo (no effect needed!)
+const sortedData = useMemo(() => 
+  data?.sort((a, b) => b.date - a.date),
+  [data]
+);
+\`\`\`
+
+**5. When You DO Need Circular Updates:**
+
+Use a ref to break the cycle:
+\`\`\`jsx
+const isInitialMount = useRef(true);
+
+useEffect(() => {
+  if (isInitialMount.current) {
+    isInitialMount.current = false;
+    return;
+  }
+  // Only runs after initial mount
+}, [dependency]);
+\`\`\`
+
+Your intuition is now calibrated - trust it! When something feels "tangled," it probably is.`,
+      },
+    ],
+    memories: [
+      {
+        content: "User is debugging a React app crash with 'Maximum update depth exceeded' error",
+        topics: ['react', 'debugging', 'infinite-loop', 'useEffect'],
+      },
+      {
+        content: "The crash occurs in the Dashboard component specifically",
+        topics: ['react', 'debugging', 'dashboard', 'components'],
+      },
+      {
+        content: "User has two useEffects in Dashboard - one fetching data by userId/filters, one updating date when data changes",
+        topics: ['react', 'useEffect', 'state', 'debugging'],
+      },
+      {
+        content: "User's intended behavior was to refresh date filter on new data, but realized it should only update on user action",
+        topics: ['react', 'state-management', 'user-interaction'],
+      },
+      {
+        content: "User wants to prevent similar infinite loop issues in the future",
+        topics: ['react', 'best-practices', 'prevention', 'eslint'],
       },
     ],
   },
